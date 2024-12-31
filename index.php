@@ -1,27 +1,26 @@
 <?php
 
-interface Logger {
-    public function log(string $message): void;
-}
+class Book {
+    private $bookName;
+    private $bookAuthor;
+    const BR = '<br />';
 
-class ConsoleLogger implements Logger {
-    public function log(string $message): void {
-        echo 'Logging To Console'. $message;
+    public function __construct($name,$author) {
+        $this->bookName = $name;
+        $this->bookAuthor = $author;
+    }
+
+    public function getNameAndAuthor() {
+        return $this->bookName . ' - ' . $this->bookAuthor.self::BR;;
     }
 }
 
-class NullLogger implements Logger {
-    public function log(string $message): void {
-        // Do Nothing
+class BookFactory {
+    public static function create($name,$author) {
+        return new Book($name,$author);
     }
 }
 
-function performTask(Logger $logger) {
-    $logger->log('Logging To Console');
-}
+$book1 = BookFactory::create("John Doe","John Doe");
 
-$consoleLogger = new ConsoleLogger();
-$consoleLogger->log('Logging To Console');
-
-$nullLogger = new NullLogger();
-$nullLogger->log('Logging To Console');
+echo $book1->getNameAndAuthor();
