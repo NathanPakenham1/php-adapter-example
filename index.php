@@ -1,26 +1,51 @@
 <?php
 
-class Book {
+
+class Book
+{
     private $bookName;
     private $bookAuthor;
-    const BR = '<br />';
 
-    public function __construct($name,$author) {
+    public function __construct($name, $author) {
         $this->bookName = $name;
         $this->bookAuthor = $author;
     }
 
-    public function getNameAndAuthor() {
-        return $this->bookName . ' - ' . $this->bookAuthor.self::BR;;
+    public function getBookName() {
+        return $this->bookName;
+    }
+
+    public function getBookAuthor() {
+        return $this->bookAuthor;
     }
 }
 
-class BookFactory {
-    public static function create($name,$author) {
-        return new Book($name,$author);
+class BookFactory
+{
+    public function create($name, $author) {
+        return new Book($name, $author);
     }
 }
 
-$book1 = BookFactory::create("John Doe","John Doe");
+class Libary {
+    private $bookFactory;
 
-echo $book1->getNameAndAuthor();
+    public function __construct(BookFactory $bookFactory) {
+        $this->bookFactory = $bookFactory;
+    }
+
+    public function addBook($name, $author) {
+        $book = $this->bookFactory->create($name, $author);
+
+        return $book;
+    }
+}
+
+$bookFactory = new BookFactory();
+
+$libary = new Libary($bookFactory);
+
+$book = $libary->addBook('2024', 'The Trading Game');
+
+echo $book->getBookName() . '<br>';
+echo $book->getBookAuthor() . '<br>';
