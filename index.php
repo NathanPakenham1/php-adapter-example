@@ -1,51 +1,50 @@
 <?php
 
+enum UserRole: string {
+    case Admin = 'admin';
+    case User = 'user';
+    case Subscriber = 'subscriber';
+}
 
-class Book
+function generateRoleDropdown(): string
 {
-    private $bookName;
-    private $bookAuthor;
+    $options = '';
 
-    public function __construct($name, $author) {
-        $this->bookName = $name;
-        $this->bookAuthor = $author;
+    foreach (UserRole::cases() as $role) {
+        $options .= sprintf('<option value="%s">%s</option>', $role->value, ucfirst($role->name));
     }
 
-    public function getBookName() {
-        return $this->bookName;
-    }
+    return $options;
+}
 
-    public function getBookAuthor() {
-        return $this->bookAuthor;
+function handleFormSubmission(string $selectedRole): string {
+    try {
+        $role = UserRole::from($selectedRole);
+        return "Selected Role: {$role->value}";
+    } catch (ValueError $e) {
+        return 'Invalid role';
     }
 }
 
-class BookFactory
-{
-    public function create($name, $author) {
-        return new Book($name, $author);
-    }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $selectedRole = $_POST['role'] ?? '';
+    echo handleFormSubmission($selectedRole);
 }
 
-class Libary {
-    private $bookFactory;
+?>
 
-    public function __construct(BookFactory $bookFactory) {
-        $this->bookFactory = $bookFactory;
-    }
-
-    public function addBook($name, $author) {
-        $book = $this->bookFactory->create($name, $author);
-
-        return $book;
-    }
-}
-
-$bookFactory = new BookFactory();
-
-$libary = new Libary($bookFactory);
-
-$book = $libary->addBook('2024', 'The Trading Game');
-
-echo $book->getBookName() . '<br>';
-echo $book->getBookAuthor() . '<br>';
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select User Role</title>
+</head>
+<body>
+<form method="post">
+    <label for="role">Select Role:</label>
+    <select name="role" id="role">
+        <?php echo generateRoleDropdown(); ?>
+    </select>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>
