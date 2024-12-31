@@ -1,48 +1,27 @@
 <?php
 
-interface Coffee {
-    public function getCost(): float;
-    public function getDescription(): string;
+interface Logger {
+    public function log(string $message): void;
 }
 
-class SimpleCoffee implements Coffee {
-    public function getCost(): float {
-        return 10;
-    }
-
-    public function getDescription(): string
-    {
-        return 'Simple Coffee';
+class ConsoleLogger implements Logger {
+    public function log(string $message): void {
+        echo 'Logging To Console'. $message;
     }
 }
 
-abstract class CoffeeDecorator implements Coffee {
-    protected $coffee;
-
-    public function __construct(Coffee $coffee) {
-        $this->coffee = $coffee;
-    }
-
-    public function getCost(): float {
-        return $this->coffee->getCost();
-    }
-
-    public function getDescription(): string {
-        return $this->coffee->getDescription();
+class NullLogger implements Logger {
+    public function log(string $message): void {
+        // Do Nothing
     }
 }
 
-class MilkCoffee extends CoffeeDecorator {
-    public function getCost(): float
-    {
-        return $this->coffee->getCost();
-    }
-
-    public function getDescription(): string {
-        return $this->coffee->getDescription() . ', milk';
-    }
+function performTask(Logger $logger) {
+    $logger->log('Logging To Console');
 }
 
-$coffee = new SimpleCoffee();
-$MilkCoffee = new MilkCoffee($coffee);
-echo $MilkCoffee->getCost();
+$consoleLogger = new ConsoleLogger();
+$consoleLogger->log('Logging To Console');
+
+$nullLogger = new NullLogger();
+$nullLogger->log('Logging To Console');
